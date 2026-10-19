@@ -21,7 +21,9 @@ All commands run through Docker (Ruby 3.2.3).
 
 * Deploying
 
-The site is published at https://ridethebikebus.github.io/2026-bike-loud-candidate-survey/.
+The site is published at https://www.ridethebikebus.org/2026-bike-loud-candidate-survey/
+(https://ridethebikebus.github.io/2026-bike-loud-candidate-survey/ redirects there, because
+the ridethebikebus org has a custom Pages domain).
 Every push to =main= runs =.github/workflows/deploy-pages.yml=, which builds the site
 and deploys it to GitHub Pages. =ci-checks.yml= checks that the site still builds
 for each pull request.
