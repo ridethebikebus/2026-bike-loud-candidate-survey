@@ -1,0 +1,73 @@
+#+TITLE: BikeLoud PDX Candidate Questionnaire
+
+A Jekyll 4 static site that shows candidates' answers to the BikeLoud PDX
+2026 City Council questionnaire. It uses the same Jekyll + Docker + Makefile
+setup as [[file:../bikebuspdx][bikebuspdx]].
+
+* Commands
+
+All commands run through Docker (Ruby 3.2.3).
+
+| Command       | What it does                                              |
+|---------------+-----------------------------------------------------------|
+| =make import= | Regenerate =_data/*.yml= from the Google Forms =.xlsx=    |
+| =make serve=  | Dev server with livereload at http://localhost:22031      |
+| =make build=  | One-off =jekyll build= into =_site/=                      |
+| =make shell=  | Bash inside the container                                 |
+
+=make import= reads =BIKELOUD_ City Council 2026 Candidate Questionnaire
+(Responses).xlsx= by default. Point it at a newer export with
+=make import XLSX=path/to/file.xlsx=.
+
+* Deploying
+
+The site is published at https://ridethebikebus.github.io/2026-bike-loud-candidate-survey/.
+Every push to =main= runs =.github/workflows/deploy-pages.yml=, which builds the site
+and deploys it to GitHub Pages. =ci-checks.yml= checks that the site still builds
+for each pull request.
+
+* Updating responses
+
+1. Download the responses sheet from Google Forms as =.xlsx= into this directory.
+2. Run =make import=.
+3. Review the diff in =_data/candidates.yml=, then commit it.
+
+The =.xlsx= is gitignored because it contains candidate email addresses.
+The import drops the email and timestamp columns. If a candidate submits more
+than once, their latest submission wins.
+
+* How it works
+
+- =bin/import-responses= writes:
+  - =_data/questions.yml=: the number, short label and full text of each question.
+    Short labels come from =SHORT_TITLES= in the script.
+  - =_data/candidates.yml=: name, slug, office and answers. Candidates are sorted by
+    last name. Use =SURNAMES= in the script for multi-word surnames.
+- =_plugins/survey_page_generator.rb= generates:
+  - =/questions/<n>/=: every candidate's answer to one question (=_layouts/question.html=).
+  - =/candidates/<slug>/=: one candidate's full response (=_layouts/candidate.html=).
+  - The =answer_html= Liquid filter. It escapes each answer, turns each line into a
+    paragraph and links URLs.
+- =index.html= links to both views. Candidates are grouped by office (district).
+
+* Ratings
+
+Visitors can give each answer 1–5 stars. Ratings are personal: =assets/js/ratings.js=
+stores them in the browser's =localStorage= (key =bikeloud-2026-ratings=). Nothing is
+sent to a server, and there is no combined ranking.
+
+- Stars appear under every answer on the question and candidate pages
+  (=_includes/rating.html=). Clicking the current rating again clears it.
+- =/ranking/= ranks each district's candidates by the average of the visitor's
+  ratings. Tied averages share a place.
+- =/rate/= is blind mode. The visitor picks a district, and each question's answers are
+  shown shuffled with names hidden. Candidate slugs are still in the page source, so
+  blind mode reduces bias but doesn't make it impossible to find out who wrote what.
+
+* Branding
+
+The look follows [[https://bikeloudpdx.org][bikeloudpdx.org]]: a gold (=#ff941d=) masthead over a
+black nav strip, black pages, and the Overpass font. The colour values are the
+WordPress theme presets from that site, and they're defined at the top of
+=assets/css/main.scss=. The logomark in =assets/images/= was downloaded from
+bikeloudpdx.org.

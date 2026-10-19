@@ -1,0 +1,11 @@
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+.bundle/
+vendor/
+.env
+
+# The raw questionnaire export contains candidate email addresses.
+# Only the scrubbed _data/*.yml produced by `make import` is committed.
+*.xlsx

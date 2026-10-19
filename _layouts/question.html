@@ -1,0 +1,51 @@
+---
+layout: default
+---
+{%- assign questions = site.data.questions -%}
+{%- assign q = questions[page.question_index] -%}
+{%- assign i = page.question_index -%}
+{%- assign prev_i = i | minus: 1 -%}
+{%- assign next_i = i | plus: 1 -%}
+{%- assign prev = questions[prev_i] -%}
+{%- assign next = questions[next_i] -%}
+{%- assign offices = site.data.candidates | group_by: 'office' -%}
+<p class="crumbs"><a href="{{ '/' | relative_url }}">All questions</a></p>
+<p class="eyebrow">Question {{ q.number }} of {{ questions.size }}</p>
+<h1 class="page-title question-text">{{ q.text }}</h1>
+
+<nav class="jump" aria-label="Jump to a district">
+  {% for office in offices %}
+    <a href="#{{ office.name | slugify }}">{{ office.name | split: ' - ' | last }}</a>
+  {% endfor %}
+</nav>
+
+{% for office in offices %}
+  <section class="district" id="{{ office.name | slugify }}">
+    <h2 class="district-title">{{ office.name }}</h2>
+    <nav class="jump" aria-label="Jump to a candidate">
+      {% for c in office.items %}
+        <a href="#{{ c.slug }}">{{ c.name }}</a>
+      {% endfor %}
+    </nav>
+    {% for c in office.items %}
+      <article class="response" id="{{ c.slug }}">
+        <h3 class="response-name">
+          <a href="{{ '/candidates/' | append: c.slug | append: '/' | relative_url }}">{{ c.name }}</a>
+        </h3>
+        <div class="answer">{{ c.answers[i] | answer_html }}</div>
+        {% include rating.html candidate=c.slug question=q.number %}
+      </article>
+    {% endfor %}
+  </section>
+{% endfor %}
+
+<nav class="pager" aria-label="Other questions">
+  {% if i > 0 %}
+    <a class="pager-prev" href="{{ '/questions/' | append: prev.number | append: '/' | relative_url }}">← Q{{ prev.number }}: {{ prev.short }}</a>
+  {% endif %}
+  {% if next %}
+    <a class="pager-next" href="{{ '/questions/' | append: next.number | append: '/' | relative_url }}">Q{{ next.number }}: {{ next.short }} →</a>
+  {% else %}
+    <a class="pager-next" href="{{ '/ranking/' | relative_url }}">See your ranking →</a>
+  {% endif %}
+</nav>

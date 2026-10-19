@@ -1,0 +1,49 @@
+---
+layout: default
+title: Blind rating
+permalink: /rate/
+---
+{%- assign offices = site.data.candidates | group_by: 'office' -%}
+{%- assign questions = site.data.questions -%}
+<h1 class="page-title">Rate the answers blind</h1>
+<p class="lede">
+  Names are hidden and the answers are shuffled for each question, so you
+  judge what was said, not who said it. When you finish, your ranking shows
+  who wrote what.
+</p>
+<noscript><p class="note">Blind rating needs JavaScript.</p></noscript>
+
+<div class="blind" data-ranking-url="{{ '/ranking/' | relative_url }}">
+  <div class="blind-start">
+    <p class="eyebrow">Pick a district</p>
+    {% for office in offices %}
+      <button type="button" class="button" data-district="{{ office.name | slugify }}">
+        {{ office.name | split: ' - ' | last }} – {{ office.items.size }} candidates
+      </button>
+    {% endfor %}
+  </div>
+
+  {% for office in offices %}
+    <div class="blind-district" data-district="{{ office.name | slugify }}" hidden>
+      {% for q in questions %}
+        <section class="blind-step" hidden>
+          <p class="eyebrow">{{ office.name }} – Question {{ q.number }} of {{ questions.size }}</p>
+          <h2 class="page-title question-text">{{ q.text }}</h2>
+          <div class="blind-answers">
+            {% for c in office.items %}
+              <article class="response">
+                <h3 class="response-name blind-label">Answer</h3>
+                <div class="answer">{{ c.answers[forloop.parentloop.index0] | answer_html }}</div>
+                {% include rating.html candidate=c.slug question=q.number %}
+              </article>
+            {% endfor %}
+          </div>
+        </section>
+      {% endfor %}
+      <nav class="pager blind-nav" aria-label="Blind rating steps">
+        <button type="button" class="pager-prev" data-move="-1">← Previous question</button>
+        <button type="button" class="pager-next" data-move="1">Next question →</button>
+      </nav>
+    </div>
+  {% endfor %}
+</div>

@@ -1,0 +1,39 @@
+---
+layout: default
+title: My ranking
+permalink: /ranking/
+---
+{%- assign offices = site.data.candidates | group_by: 'office' -%}
+<h1 class="page-title">Your ranking</h1>
+<p class="lede">
+  Candidates ranked by the average of your star ratings for their answers.
+  Your ratings are saved only in this browser. Nobody else can see them.
+</p>
+<p class="ranking-empty" hidden>
+  You haven't rated any answers yet. Rate them
+  <a href="{{ '/questions/1/' | relative_url }}">question by question</a> or
+  <a href="{{ '/rate/' | relative_url }}">blind</a>, then come back here.
+</p>
+
+{% for office in offices %}
+  <section class="district ranking" id="{{ office.name | slugify }}" data-questions="{{ site.data.questions.size }}">
+    <h2 class="district-title">{{ office.name }}</h2>
+    <ol class="rank-list">
+      {% for c in office.items %}
+        <li class="rank" data-candidate="{{ c.slug }}">
+          <span class="rank-place"></span>
+          <a class="rank-name" href="{{ '/candidates/' | append: c.slug | append: '/' | relative_url }}">{{ c.name }}</a>
+          <span class="rank-score"></span>
+          <span class="rank-bar" aria-hidden="true"><span></span></span>
+        </li>
+      {% endfor %}
+    </ol>
+    <h3 class="rank-unrated-title" hidden>Not rated yet</h3>
+    <ul class="rank-unrated"></ul>
+  </section>
+{% endfor %}
+
+<p class="ranking-actions">
+  <a class="button" href="{{ '/rate/' | relative_url }}">Rate blind</a>
+  <button type="button" class="button button-quiet" id="clear-ratings">Clear my ratings</button>
+</p>

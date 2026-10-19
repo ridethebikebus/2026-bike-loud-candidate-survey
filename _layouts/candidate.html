@@ -1,0 +1,36 @@
+---
+layout: default
+---
+{%- assign candidates = site.data.candidates -%}
+{%- assign c = candidates[page.candidate_index] -%}
+{%- assign prev_i = page.candidate_index | minus: 1 -%}
+{%- assign next_i = page.candidate_index | plus: 1 -%}
+{%- assign prev = candidates[prev_i] -%}
+{%- assign next = candidates[next_i] -%}
+<p class="crumbs"><a href="{{ '/#candidates' | relative_url }}">All candidates</a></p>
+<h1 class="page-title">{{ c.name }}</h1>
+<p class="office">{{ c.office }}</p>
+
+<ol class="qa-list">
+  {% for q in site.data.questions %}
+    {%- assign i = forloop.index0 -%}
+    <li class="qa" id="q{{ q.number }}">
+      <h2 class="qa-short">
+        <span class="qnum">Q{{ q.number }}</span>
+        <a href="{{ '/questions/' | append: q.number | append: '/' | relative_url }}" title="Compare all candidates on this question">{{ q.short }}</a>
+      </h2>
+      <p class="qa-question">{{ q.text }}</p>
+      <div class="answer">{{ c.answers[i] | answer_html }}</div>
+      {% include rating.html candidate=c.slug question=q.number %}
+    </li>
+  {% endfor %}
+</ol>
+
+<nav class="pager" aria-label="Other candidates">
+  {% if page.candidate_index > 0 %}
+    <a class="pager-prev" href="{{ '/candidates/' | append: prev.slug | append: '/' | relative_url }}">← {{ prev.name }}</a>
+  {% endif %}
+  {% if next %}
+    <a class="pager-next" href="{{ '/candidates/' | append: next.slug | append: '/' | relative_url }}">{{ next.name }} →</a>
+  {% endif %}
+</nav>

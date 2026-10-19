@@ -1,0 +1,13 @@
+---
+- number: 1
+  short: A city to learn from
+  text: What city has an approach to transportation that Portland should learn from? What specific policies, funding, design, etc., could be adopted to work here?
+- number: 2
+  short: Got it right, got it wrong
+  text: What is one specific Portland transportation project (built, abandoned, under construction, or proposed) that you think Portland got right, and one that Portland got wrong?
+- number: 3
+  short: Progress on biking, walking & safety
+  text: Is Portland making progress on getting more people biking and walking, and on making streets safer? What do you think is behind that trajectory?
+- number: 4
+  short: How they get around
+  text: How do you actually get around Portland day-to-day? Commuting, errands, evening plans, etc. What is the last trip you took by bike or transit, and what's stopping you from doing more of your trips that way?

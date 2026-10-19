@@ -1,0 +1,79 @@
+#!/usr/bin/env ruby
+# Converts the Google Forms .xlsx export into _data/questions.yml and
+# _data/candidates.yml. Every sheet (one per district) must share the same
+# questions. Timestamps and email addresses are dropped so
+# they never reach the public site.
+#
+# Usage: bin/import-responses <responses.xlsx>
+
+require 'jekyll'
+require 'roo'
+require 'yaml'
+
+# Columns before the questions: Timestamp, Email, Name, Office.
+NAME_COL = 2
+OFFICE_COL = 3
+FIRST_QUESTION_COL = 4
+
+# Short labels for navigation, in question order. Add one when the form
+# gains a question; the full question text is used if a label is missing.
+SHORT_TITLES = [
+  'A city to learn from',
+  'Got it right, got it wrong',
+  'Progress on biking, walking & safety',
+  'How they get around',
+].freeze
+
+SUFFIXES = /\A(jr|sr|ii|iii|iv)\.?\z/i
+
+# Multi-word surnames that "last word of the name" would sort wrongly.
+SURNAMES = {
+  'Tiffany Koyama Lane' => 'Koyama Lane',
+}.freeze
+
+def sort_key(name)
+  words = name.split.reject { |w| w.match?(SUFFIXES) }
+  [SURNAMES.fetch(name, words.last.to_s).downcase, name.downcase]
+end
+
+def questions(header)
+  header.drop(FIRST_QUESTION_COL).each_with_index.map do |text, i|
+    { 'number' => i + 1, 'short' => SHORT_TITLES[i] || text.strip, 'text' => text.strip }
+  end
+end
+
+def candidate(row)
+  name = row[NAME_COL].to_s.strip
+  {
+    'name' => name,
+    'slug' => Jekyll::Utils.slugify(name, mode: 'latin'),
+    'office' => row[OFFICE_COL].to_s.strip,
+    'answers' => row.drop(FIRST_QUESTION_COL).map { |a| a.to_s.strip },
+  }
+end
+
+# Rows are in submission order, so a later resubmission by the same
+# candidate replaces the earlier one.
+def candidates(rows)
+  rows.map { |r| candidate(r) }
+      .reject { |c| c['name'].empty? }
+      .each_with_object({}) { |c, acc| acc[c['slug']] = c }
+      .values
+      .sort_by { |c| [c['office'], *sort_key(c['name'])] }
+end
+
+# Returns the shared header row and the response rows from every sheet.
+def read_sheets(path)
+  xlsx = Roo::Excelx.new(path)
+  tables = xlsx.sheets.map { |name| xlsx.sheet(name).to_a }
+  headers = tables.map(&:first).uniq
+  abort "sheets have different questions: #{xlsx.sheets.join(', ')}" if headers.size > 1
+  [headers.first, tables.flat_map { |t| t.drop(1) }]
+end
+
+path = ARGV.fetch(0) { abort 'usage: bin/import-responses <responses.xlsx>' }
+header, rows = read_sheets(path)
+
+File.write('_data/questions.yml', questions(header).to_yaml(line_width: -1))
+File.write('_data/candidates.yml', candidates(rows).to_yaml(line_width: -1))
+puts "wrote #{rows.size} responses, #{header.size - FIRST_QUESTION_COL} questions"

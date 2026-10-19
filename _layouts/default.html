@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include head.html %}
+<body>
+  <header class="site-header">
+    <div class="masthead">
+      <a class="brand" href="{{ site.org_url }}">
+        <img src="{{ '/assets/images/bikeloud-mark-150.png' | relative_url }}" alt="" width="64" height="64">
+        <span>BikeLoud PDX</span>
+      </a>
+    </div>
+    <nav class="site-nav" aria-label="Site">
+      <a href="{{ '/' | relative_url }}"{% if page.url == '/' %} aria-current="page"{% endif %}>{{ site.election }} Questionnaire</a>
+      <span class="nav-questions">
+        {% for q in site.data.questions %}
+          {%- assign q_url = '/questions/' | append: q.number | append: '/' -%}
+          <a href="{{ q_url | relative_url }}"{% if page.url == q_url %} aria-current="page"{% endif %}>Q{{ q.number }}</a>
+        {% endfor %}
+        <a href="{{ '/ranking/' | relative_url }}"{% if page.url == '/ranking/' %} aria-current="page"{% endif %}>My ranking</a>
+      </span>
+    </nav>
+  </header>
+  <main class="wrap">
+    {{ content }}
+  </main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Answers are published as submitted by each candidate, unedited.</p>
+      <p><a class="button" href="{{ site.org_url }}">Visit BikeLoud PDX</a></p>
+    </div>
+  </footer>
+  <script src="{{ '/assets/js/ratings.js' | relative_url }}"></script>
+</body>
+</html>

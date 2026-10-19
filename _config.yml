@@ -1,0 +1,21 @@
+title: BikeLoud PDX Candidate Questionnaire
+election: 2026 Portland City Council
+description: >-
+  Portland City Council candidates' answers to the BikeLoud PDX 2026
+  questionnaire on biking, walking, transit and street safety.
+baseurl: "/2026-bike-loud-candidate-survey"
+url: "https://ridethebikebus.github.io"
+org_url: https://bikeloudpdx.org
+
+exclude:
+  - bin/
+  - Dockerfile
+  - Makefile
+  - README.org
+  - "*.xlsx"
+
+markdown: kramdown
+permalink: pretty
+
+sass:
+  style: compressed

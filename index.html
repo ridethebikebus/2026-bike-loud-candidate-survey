@@ -1,0 +1,55 @@
+---
+layout: default
+---
+{%- assign offices = site.data.candidates | group_by: 'office' | sort: 'name' -%}
+<section class="intro">
+  <h1 class="page-title">{{ site.election }} candidates on biking, walking &amp; transit</h1>
+  <p class="lede">
+    BikeLoud PDX asked Portland City Council candidates the same
+    {{ site.data.questions.size }} questions. {{ site.data.candidates.size }}
+    candidates in {{ offices.size }} districts responded. Compare everyone's
+    answers one question at a time, or read a single candidate's full response.
+  </p>
+</section>
+
+<section class="rate-callout" aria-labelledby="rate">
+  <h2 class="section-title" id="rate">Rate the answers</h2>
+  <p>
+    Give each answer 1 to 5 stars and see which candidates come out on top
+    for you. Rate as you read, with names shown, or rate blind so names don't
+    sway you. Your ratings stay in this browser.
+  </p>
+  <p class="callout-actions">
+    <a class="button" href="{{ '/questions/1/' | relative_url }}">Rate as you read</a>
+    <a class="button button-quiet" href="{{ '/rate/' | relative_url }}">Rate blind</a>
+    <a href="{{ '/ranking/' | relative_url }}">See my ranking →</a>
+  </p>
+</section>
+
+<section aria-labelledby="by-question">
+  <h2 class="section-title" id="by-question">Compare by question</h2>
+  <ol class="card-list">
+    {% for q in site.data.questions %}
+      <li>
+        <a class="card" href="{{ '/questions/' | append: q.number | append: '/' | relative_url }}">
+          <span class="qnum">Q{{ q.number }}</span>
+          <span class="card-title">{{ q.short }}</span>
+          <span class="card-body">{{ q.text }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ol>
+</section>
+
+<section aria-labelledby="candidates" id="candidates">
+  <h2 class="section-title">Read by candidate</h2>
+  {% for office in offices %}
+    <h3 class="office-heading">{{ office.name }}</h3>
+    <ul class="name-grid">
+      {% for c in office.items %}
+        <li><a href="{{ '/candidates/' | append: c.slug | append: '/' | relative_url }}">{{ c.name }}</a></li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+  <p class="note">Listed alphabetically by last name.</p>
+</section>
