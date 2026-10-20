@@ -10,6 +10,7 @@ layout: default
 <p class="crumbs"><a href="{{ '/#candidates' | relative_url }}">All candidates</a></p>
 <h1 class="page-title">{{ c.name }}</h1>
 <p class="office">{{ c.office }}</p>
+{% include privacy-note.html compact=true %}
 
 <ol class="qa-list">
   {% for q in site.data.questions %}

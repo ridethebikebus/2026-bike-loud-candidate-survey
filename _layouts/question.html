@@ -12,6 +12,7 @@ layout: default
 <p class="crumbs"><a href="{{ '/' | relative_url }}">All questions</a></p>
 <p class="eyebrow">Question {{ q.number }} of {{ questions.size }}</p>
 <h1 class="page-title question-text">{{ q.text }}</h1>
+{% include privacy-note.html compact=true %}
 
 <nav class="jump" aria-label="Jump to a district">
   {% for office in offices %}

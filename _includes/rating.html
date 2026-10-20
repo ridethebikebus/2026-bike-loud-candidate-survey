@@ -1,6 +1,6 @@
 <div class="rating" data-candidate="{{ include.candidate }}" data-question="{{ include.question }}">
-  <span class="rating-label">Your rating</span>
-  <span class="rating-stars" role="group" aria-label="Rate this answer from 1 to 5 stars">
+  <span class="rating-label" title="Saved only on this device. Never sent anywhere.">{% include lock-icon.html %} Private rating</span>
+  <span class="rating-stars" role="group" aria-label="Rate this answer from 1 to 5 stars. Your rating is saved only on this device.">
     {%- for n in (1..5) -%}
       <button type="button" data-stars="{{ n }}" aria-pressed="false" aria-label="{{ n }} star{% if n > 1 %}s{% endif %}">★</button>
     {%- endfor -%}

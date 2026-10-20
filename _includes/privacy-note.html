@@ -1,0 +1,18 @@
+{%- comment -%}
+  Explains that ratings never leave the visitor's device. Pass compact=true
+  for the one-line version used above answers.
+{%- endcomment -%}
+<aside class="privacy-note{% if include.compact %} privacy-note-compact{% endif %}" aria-label="About your ratings">
+  {% include lock-icon.html %}
+  <p>
+    <strong>Your ratings are yours alone.</strong>
+    {% if include.compact -%}
+      They're saved only on this device and never sent anywhere.
+    {%- else -%}
+      They're saved only on this device, in this browser, and never leave it.
+      They aren't sent to BikeLoud PDX, the candidates or anyone else, and
+      there's no public tally. Clearing your browser data erases them, and
+      they won't follow you to another device.
+    {%- endif %}
+  </p>
+</aside>

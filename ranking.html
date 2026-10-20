@@ -4,11 +4,12 @@ title: My ranking
 permalink: /ranking/
 ---
 {%- assign offices = site.data.candidates | group_by: 'office' -%}
-<h1 class="page-title">Your ranking</h1>
+<h1 class="page-title">Your private ranking</h1>
 <p class="lede">
   Candidates ranked by the average of your star ratings for their answers.
-  Your ratings are saved only in this browser. Nobody else can see them.
+  Only you can see this ranking.
 </p>
+{% include privacy-note.html %}
 <p class="ranking-empty" hidden>
   You haven't rated any answers yet. Rate them
   <a href="{{ '/questions/1/' | relative_url }}">question by question</a> or
